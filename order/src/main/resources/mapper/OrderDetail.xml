@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ike.order.dao.OrderDetailDao">
+    <resultMap id="orderDetailResultMap" type="com.ike.order.entity.OrderDetail">
+        <id property="detailId" column="order_id"/>
+        <result property="productName" column="product_name"/>
+        <result property="productPrice" column="product_price"/>
+        <result property="productQuantity" column="product_quantity"/>
+        <result property="productIcon" column="product_icon"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <association property="orderId" column="order_id" javaType="com.ike.order.entity.OrderMaster">
+            <id property="orderId" column="order_id"/>
+            <result property="buyerName" column="buyer_name"/>
+        </association>
+    </resultMap>
+
+    <select id="queryOrderDetailList" resultMap="orderDetailResultMap">
+        SELECT orderDetail.detail_id,
+        orderDetail.order_id,
+        orderDetail.product_id,
+        orderDetail.product_name,
+        orderDetail.product_price,
+        orderDetail.product_quantity,
+        orderDetail.product_icon,
+        orderDetail.create_time,
+        orderDetail.update_time,
+        orderMaster.buyer_name
+        FROM order_detail AS orderDetail
+        LEFT JOIN order_master AS orderMaster ON orderDetail.order_id = orderMaster.order_id
+        <where>
+            1=1
+            <if test="orderDetailCondition != null and orderDetailCondition.orderId != null">
+                AND orderDetail.order_id = #{orderDetailCondition.orderId}
+            </if>
+            <if test="orderDetailCondition != null and orderDetailCondition.productId != null">
+                AND orderDetail.product_id = #{orderDetailCondition.productId}
+            </if>
+            <if test="orderDetailCondition != null and orderDetailCondition.productName != null">
+                AND orderDetail.product_name LIKE '%${orderDetailCondition.productName}%'
+            </if>
+            <if test="orderDetailCondition != null and orderDetailCondition.productPrice != null">
+                AND orderDetail.product_price = #{orderDetailCondition.productPrice}
+            </if>
+            <if test="orderDetailCondition != null and orderDetailCondition.productQuantity != null">
+                AND orderDetail.product_quantity = #{orderDetailCondition.productQuantity}
+            </if>
+            <if test="orderDetailCondition != null and orderDetailCondition.productIcon != null">
+                AND orderDetail.product_icon = #{orderDetailCondition.productIcon}
+            </if>
+        </where>
+    </select>
+    <select id="queryOrderDetailById" parameterType="String" resultMap="orderDetailResultMap">
+        SELECT orderDetail.detail_id,
+               orderDetail.order_id,
+               orderDetail.product_id,
+               orderDetail.product_name,
+               orderDetail.product_price,
+               orderDetail.product_quantity,
+               orderDetail.product_icon,
+               orderDetail.create_time,
+               orderDetail.update_time,
+               orderMaster.buyer_name
+        FROM order_detail AS orderDetail
+                 LEFT JOIN order_master AS orderMaster ON orderDetail.order_id = orderMaster.order_id
+        WHERE orderDetail.detail_id = #{orderDetailId}
+    </select>
+
+    <insert id="insertOrderDetail" useGeneratedKeys="true" keyProperty="detailId" keyColumn="detail_id">
+        INSERT INTO order_detail(detail_id,order_id, product_id,
+                                 product_name, product_price, product_quantity,
+                                 product_icon, create_time, update_time)
+        VALUES (#{orderDetail.detailId},
+                #{orderDetail.orderId},
+                #{orderDetail.productId},
+                #{orderDetail.productName},
+                #{orderDetail.productPrice},
+                #{orderDetail.productQuantity},
+                #{orderDetail.productIcon},
+                #{orderDetail.createTime},
+                #{orderDetail.updateTime})
+    </insert>
+</mapper>

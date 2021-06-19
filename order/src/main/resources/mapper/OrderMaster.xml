@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ike.order.dao.OrderMasterDao">
+    <select id="queryOrderMasterList" resultType="com.ike.order.entity.OrderMaster">
+        SELECT order_id,
+        buyer_name,
+        buyer_phone,
+        buyer_address,
+        buyer_openid,
+        order_amount,
+        order_status,
+        pay_status,
+        create_time,
+        update_time
+        FROM order_master
+        <where>
+            1=1
+            <if test="orderMasterCondition != null and orderMasterCondition.orderStatus != null">
+                AND order_status=#{orderMasterCondition.orderStatus}
+            </if>
+        </where>
+    </select>
+    <select id="queryOrderMasterById" parameterType="String" resultType="com.ike.order.entity.OrderMaster">
+        SELECT order_id,
+               buyer_name,
+               buyer_phone,
+               buyer_address,
+               buyer_openid,
+               order_amount,
+               order_status,
+               pay_status,
+               create_time,
+               update_time
+        FROM order_master
+        WHERE order_id = #{OrderMasterId}
+    </select>
+    <insert id="insertOrderMaster">
+        INSERT INTO order_master(order_id, buyer_name, buyer_phone, buyer_address, buyer_openid, order_amount,
+                                 order_status,
+                                 pay_status, create_time, update_time) VALUE (#{orderMaster.orderId},
+                                                                              #{orderMaster.buyerName},
+                                                                              #{orderMaster.buyerPhone},
+                                                                              #{orderMaster.buyerAddress},
+                                                                              #{orderMaster.buyerOpenid},
+                                                                              #{orderMaster.orderAmount},
+                                                                              #{orderMaster.orderStatus},
+                                                                              #{orderMaster.payStatus},
+                                                                              #{orderMaster.createTime},
+                                                                              #{orderMaster.updateTime}
+            )
+    </insert>
+</mapper>
