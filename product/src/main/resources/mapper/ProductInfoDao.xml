@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ike.product.dao.ProductInfoDao">
+    <resultMap id="productInfoMapper" type="com.ike.product.entity.ProductInfo">
+        <id property="productId" column="product_id"/>
+        <result property="productName" column="product_name"/>
+        <result property="productPrice" column="product_price"/>
+        <result property="productStock" column="product_stock"/>
+        <result property="productDescription" column="product_description"/>
+        <result property="productIcon" column="product_icon"/>
+        <result property="productStatus" column="product_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <association property="categoryType" column="category_type" javaType="com.ike.product.entity.ProductCategory">
+            <id property="categoryType" column="category_type"/>
+            <result property="categoryName" column="category_name"/>
+        </association>
+    </resultMap>
+    <select id="queryProductInfoById" resultMap="productInfoMapper" parameterType="String">
+        SELECT PINFO.product_id
+             , PINFO.product_name
+             , PINFO.product_price
+             , PINFO.product_stock
+             , PINFO.product_description
+             , PINFO.product_icon
+             , PINFO.product_status
+             , PINFO.category_type
+             , PINFO.create_time
+             , PINFO.update_time
+             , PCATEGORY.category_name
+        FROM product_info PINFO
+                 INNER JOIN product_category PCATEGORY ON PINFO.category_type = PCATEGORY.category_type
+        WHERE PINFO.product_id = #{productInfoId}
+    </select>
+</mapper>

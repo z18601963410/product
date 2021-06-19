@@ -16,7 +16,7 @@ import java.util.Map;
  * 数据库连接池C3P0   @MapperScan 扫描dao包
  */
 @Configuration
-@MapperScan("com.ike.demo.dao")
+@MapperScan("com.ike.product.dao")
 public class DataSourceConfiguration {
 
     //数据源Map

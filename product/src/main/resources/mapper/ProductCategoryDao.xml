@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ike.product.dao.ProductCategoryDao">
+    <resultMap id="productCategoryMapper" type="com.ike.product.entity.ProductCategory">
+        <id property="categoryId" column="category_id" javaType="int"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="categoryType" column="category_type"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <select id="queryProductCategoryList" resultMap="productCategoryMapper">
+        SELECT category_id,category_name,category_type,create_time,update_time
+        FROM product_category
+        <where>
+            1=1
+            <if test="productCategoryCondition != null and productCategoryCondition.categoryName != null">
+                AND category_name like '%${productCategoryCondition.categoryName}%'
+            </if>
+            <if test="productCategoryCondition != null and productCategoryCondition.categoryType != null">
+                AND category_type=#{productCategoryCondition.categoryType}
+            </if>
+        </where>
+    </select>
+    <select id="queryProductCategoryById" parameterType="int" resultType="com.ike.product.entity.ProductCategory">
+        SELECT category_id, category_name, category_type, create_time, update_time
+        FROM product_category
+        WHERE category_id = #{productCategoryId}
+    </select>
+</mapper>
